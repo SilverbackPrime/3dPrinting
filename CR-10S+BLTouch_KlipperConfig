@@ -1,0 +1,170 @@
+# This file contains pin mappings for the 2017 Creality CR-10S.
+# To use this config, the firmware should be compiled for the AVR atmega2560.
+
+# This file also contains configuration for auto bed leveling with a capacitive sensor,
+# with homing override for safe z-homing.
+
+# Please have a look at the G-Codes help to use calibration correctly:
+# https://github.com/KevinOConnor/klipper/blob/master/docs/G-Codes.md#mesh-bed-leveling
+
+# See docs/Config_Reference.md for a description of parameters.
+
+[stepper_x]
+step_pin: PF0
+dir_pin: PF1
+enable_pin: !PD7
+microsteps: 16
+rotation_distance: 40
+endstop_pin: ^PE5
+position_endstop: 0
+position_max: 300
+homing_speed: 50
+
+[stepper_y]
+step_pin: PF6
+dir_pin: PF7
+enable_pin: !PF2
+microsteps: 16
+rotation_distance: 40
+endstop_pin: ^PJ1
+position_endstop: 0
+position_max: 300
+homing_speed: 50
+
+[stepper_z]
+step_pin: PL3
+dir_pin: !PL1
+enable_pin: !PK0
+microsteps: 16
+rotation_distance: 8
+#rotation_distance: 7.9                  # Attempting to correct short Z-dimension
+#endstop_pin: ^PD3
+#position_endstop: 0
+endstop_pin: probe:z_virtual_endstop    # enable to use BLTouch
+position_min: -5                        # enable to use BLTouch
+#position_max: 400
+position_max: 375                       # deconflict from X carriage impacting support rods at high Z values
+
+[safe_z_home]                           # enable to use BLTouch
+home_xy_position: 150, 150
+speed: 100
+z_hop: 10
+z_hop_speed: 5
+
+[bltouch]                               # enable for BLTouch - fast-mode
+sensor_pin: ^PD3
+control_pin: PB5
+pin_up_touch_mode_reports_triggered: True
+probe_with_touch_mode: True
+x_offset: -43.5                         # modify as needed for bltouch location
+y_offset: -7.4                          # modify as needed for bltouch location
+z_offset: 2.725                         # From PROBE_CALIBRATE
+speed: 10
+samples: 3
+sample_retract_dist: 5.0                # Can be set lower, example 2.5 depending on height of bltouch from bed
+lift_speed: 40
+samples_tolerance_retries: 3
+speed: 10
+samples: 2
+
+[bed_mesh]                              # enable for BLTouch
+speed: 300
+mesh_min: 25, 25
+mesh_max: 250, 250
+algorithm: bicubic
+probe_count: 7,7                        # 49 points due to large bed size
+horizontal_move_z: 5
+
+[bed_screws]
+screw1: 35, 35
+screw2: 35, 265
+screw3: 265, 265
+screw4: 265, 35
+
+[gcode_macro G29]                       # If moving from marlin to klipper uncomment to mimic G29
+gcode:
+ BED_MESH_CALIBRATE
+ G1 X0 Y0 Z10 F4000
+
+[extruder]
+step_pin: PA4
+dir_pin: PA6
+enable_pin: !PA2
+microsteps: 16
+rotation_distance: 32.443               # Calibrate - see https://www.klipper3d.org/Rotation_Distance.html
+nozzle_diameter: 0.400
+filament_diameter: 1.750
+heater_pin: PB4
+sensor_type: EPCOS 100K B57560G104F
+sensor_pin: PK5
+control: pid
+pid_Kp: 29.674                          # From PID_CALIBRATE
+pid_Ki: 1.815                           # From PID_CALIBRATE
+pid_Kd: 121.294                         # From PID_CALIBRATE
+min_temp: 0
+max_temp: 250
+pressure_advance: 0.527                 # Calibrate - see https://www.klipper3d.org/Pressure_Advance.html
+
+[heater_bed]
+heater_pin: PH5
+sensor_type: ATC Semitec 104GT-2
+sensor_pin: PK6
+control: pid
+pid_Kp: 69.898                          # From PID_CALIBRATE
+pid_Ki: 1.137                           # From PID_CALIBRATE
+pid_Kd: 1074.682                        # From PID_CALIBRATE
+min_temp: 0
+max_temp: 130
+
+[skew_correction]
+
+[fan]
+pin: PH6
+
+[mcu]
+serial: /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A907CFNW-if00-port0
+restart_method: command
+
+[printer]
+kinematics: cartesian
+max_velocity: 300
+max_accel: 3000
+max_z_velocity: 5
+max_z_accel: 100
+
+[display]
+lcd_type: st7920
+cs_pin: PH1
+sclk_pin: PA1
+sid_pin: PH0
+encoder_pins: ^PC4, ^PC6
+click_pin: ^!PC2
+
+#*# <---------------------- SAVE_CONFIG ---------------------->
+#*# DO NOT EDIT THIS BLOCK OR BELOW. The contents are auto-generated.
+#*#
+#*# [bed_mesh default]
+#*# version = 1
+#*# points =
+#*#     0.132500, 0.090000, 0.035000, 0.053750, 0.032500, 0.115000, 0.158750
+#*#     -0.057500, -0.056250, -0.098750, -0.053750, -0.060000, 0.025000, 0.087500
+#*#     0.005000, -0.010000, -0.063750, -0.042500, -0.057500, 0.025000, 0.050000
+#*#     -0.055000, -0.052500, -0.085000, -0.051250, -0.052500, 0.023750, 0.065000
+#*#     0.010000, -0.025000, -0.072500, -0.063750, -0.080000, -0.020000, 0.006250
+#*#     -0.037500, -0.060000, -0.105000, -0.071250, -0.068750, 0.018750, 0.067500
+#*#     0.086250, 0.025000, -0.040000, -0.045000, -0.076250, -0.000000, 0.041250
+#*# tension = 0.2
+#*# min_x = 25.0
+#*# algo = bicubic
+#*# y_count = 7
+#*# mesh_y_pps = 2
+#*# min_y = 25.0
+#*# x_count = 7
+#*# max_y = 250.0
+#*# mesh_x_pps = 2
+#*# max_x = 250.0
+#*#
+#*# [skew_correction default]
+#*# xy_skew = -0.00849895345077
+#*# xz_skew = -0.0141658937634
+#*# yz_skew = 0.0113721805917
